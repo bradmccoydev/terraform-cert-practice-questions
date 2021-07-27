@@ -1,5 +1,5 @@
 # Terraform Associate Certification Practice Questions
-This repository is for practice questions for the Terraform Associate Certification Exam. Feel free to contribute to this 
+This repository is for practice questions for the Terraform Associate Certification Exam. Feel free to contribute to this :)
 
 ## Contents:
 * [Understand Infrastructure as Code (IaC) concepts](https://github.com/bradmccoydev/terraform-cert-practice-questions/blob/main/Chapters/Understand%20Infrastructure%20as%20code%20(IAC)%20concpets.md)
