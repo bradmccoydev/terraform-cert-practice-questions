@@ -1,26 +1,21 @@
-What are Backends?
+# What are Backends?
 
 A "backend" in Terraform determines how state is loaded and how an operation such as apply is executed. This abstraction enables non-local file state storage, remote execution, etc.
 
 By default, Terraform uses the "local" backend, which is the normal behavior of Terraform. “Remote” backend allows the state file to be stored in a shared storage space to allow for team collaboration.
 
  
-
-What are the types of Backend?
+# What are the types of Backend?
 
 Standard: State management, functionality covered in State Storage & Locking
 
 Enhanced: Everything in standard plus remote operations.
 
- 
-
-What is a partial configuration in terms of configuring Backends?
+# What is a partial configuration in terms of configuring Backends?
 
 You do not need to specify every required argument in the backend configuration. Omitting certain arguments may be desirable to avoid storing secrets (such as access keys) within the main configuration. When some or all of the arguments are omitted, it’s called a partial configuration.
-
  
-
-What are the ways to provide remaining arguments when using partial configuration?
+# What are the ways to provide remaining arguments when using partial configuration?
 
 Interactively: Terraform will interactively ask you for the required values on the CLI, unless interactive input is disabled. Terraform will not prompt for optional values.
 
@@ -28,9 +23,7 @@ File: A configuration file may be specified via the init command line. To specif
 
 Command-line key/value pairs: Key/value pairs can be specified via the init command line. Note that many shells retain command-line flags in a history file, so this isn't recommended for secrets. To specify a single key/value pair, use the -backend-config="KEY=VALUE" option when running terraform init.
 
- 
-
-What is the basic requirement when using partial configuration?
+# What is the basic requirement when using partial configuration?
 
 When using partial configuration, Terraform requires at a minimum that an empty backend configuration is specified in one of the root Terraform configuration files, to specify the backend type
 
@@ -40,29 +33,23 @@ terraform {
   backend "consul" {}
 }
  
-
-Give an example of passing partial configuration with Command-line Key/Value pairs?
-
+# Give an example of passing partial configuration with Command-line Key/Value pairs?
 
 terraform init \
     -backend-config="address=demo.consul.io" \
     -backend-config="path=example_app/terraform_state" \
     -backend-config="scheme=https"
  
-
-How do you unconfigure a backend?
+# How do you unconfigure a backend?
 
 If you no longer want to use any backend, you can simply remove the configuration from the file. Terraform will detect this like any other change and prompt you to rerun terraform init.
 
 As part of the reinitialization, Terraform will ask if you'd like to migrate your state back down to normal local state. Once this is complete then Terraform is back to behaving as it does by default.
 
  
-
-Local backend
-What is local Backend?
+# What is local Backend?
 
 The local backend stores state on the local filesystem, locks that state using system APIs, and performs operations locally.
-
 
 // Example
 terraform {
@@ -72,52 +59,38 @@ terraform {
 }
  
 
-What is the default path for the local backend?
+# What is the default path for the local backend?
 
 Defaults to "terraform.tfstate" relative to the root module.
 
- 
-
- 
-
-Remote backend
-What are remote Backends?
+# What are remote Backends?
 
 Remote backends allow Terraform to use a shared storage space for state data, so any member of your team can use Terraform to manage the same infrastructure.
 
- 
 
-What is the benefit of using remote backend?
+# What is the benefit of using remote backend?
 
 Remote state storage makes collaboration easier and keeps state and secret information off your local disk.
 
 Remote state is loaded only in memory when it is used.
 
- 
-
-If you want to switch from using remote backend to local backend. What should you do?
+# If you want to switch from using remote backend to local backend. What should you do?
 
 If you want to move back to local state, you can remove the backend configuration block from your configuration and run terraform init again.
 
 Terraform will once again ask if you want to migrate your state back to local.
 
- 
-
-How do you backup the state to the remote backend?
+# How do you backup the state to the remote backend?
 
 When configuring a backend for the first time (moving from no defined backend to explicitly configuring one), Terraform will give you the option to migrate your state to the new backend. This lets you adopt backends without losing any existing state.
 
- 
-
-Backends are optional. Is this true?
+# Backends are optional. Is this true?
 
 Yes. You can successfully use Terraform without ever having to use backends. 
 
 If you're an individual, you can likely get away with never using backends. However, they do solve pain points that afflict teams at a certain scale. 
 
- 
-
-What are the benefits of Backends?
+# What are the benefits of Backends?
 
 Working in a team: Backends can store their state remotely and protect that state with locks to prevent corruption. Some cloud backends even automatically store a history of all state revisions for backup.
 
