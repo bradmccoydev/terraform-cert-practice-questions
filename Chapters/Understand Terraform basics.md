@@ -17,10 +17,11 @@ step 2: mv ~/Downloads/terraform /usr/local/bin/terraform
 
 The special terraform configuration block type is used to configure some behaviors of Terraform itself, such as requiring a minimum Terraform version to apply your configuration.
 
+```
 terraform {
-  # ...
+  ...
 }
- 
+```
 # Only constants are allowed inside the terraform block. Is this correct?
 
 Yes
@@ -34,10 +35,12 @@ Terraform
 
 # How do you configure a Provider?
 
+```
 provider "google" {
   project = "acme-app"
   region  = "us-central1"
 }
+```
 
 The name given in the block header ("google" in this example) is the name of the provider to configure. Terraform associates each resource type with a provider by taking the first word of the resource type name (separated by underscores), and so the "google" provider is assumed to be the provider for the resource type name google_compute_instance.
 The body of the block (between { and }) contains configuration arguments for the provider itself. Most arguments in this section are specified by the provider itself; in this example both project and region are specific to the google provider.
