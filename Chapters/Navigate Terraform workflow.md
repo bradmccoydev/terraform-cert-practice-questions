@@ -71,7 +71,7 @@ Return a detailed exit code when the command exits. When provided, this argument
 
 terraform plan -target=resource - A Resource Address to target (eg: azurerm_storage_account.default)
 
-How do you update the state prior to checking differences when you run a terraform plan?
+# How do you update the state prior to checking differences when you run a terraform plan?
 
 terraform plan -refresh=true
 
