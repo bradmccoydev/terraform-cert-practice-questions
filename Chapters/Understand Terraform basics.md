@@ -1,12 +1,10 @@
 # How do you install terraform on different OS?
 
-// Mac OS
 ```bash
+// Mac OS
 brew tap hashicorp/tap
 brew install hashicorp/tap/terraform
-```
 // Windows
-```bash
 choco install terraform
 ```
 
