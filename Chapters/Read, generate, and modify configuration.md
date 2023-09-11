@@ -1,31 +1,34 @@
 # How do you define a variable?
 
-
+```terraform
 variable "region" {
   description = "Cloud location"
   type        = string
   default     = "Australia Southeast"
 }
-
+```
 The fields are optional, however it’s best practice to provide as much information as possible.
-# How do you access the variable in the configuration?
 
+# How do you access the variable in the configuration?
+```terraform
 provider "aws" {
   region = var.region
 }
 var.name_of_variable
-
+```
 # How many ways you can assign variables in the configuration?
 
-Command-line flags
-terraform apply -var 'region=us-east-1'
+**Command-line flags**
+`terraform apply -var 'region=us-east-1'`
 
-From a file
-Create a file named variables.tfvars with the following contents: region = "us-east-1"
-Insert the file as an argument to apply → terraform apply -var-file="variables.tfvars"
+**From a file**
 
-From environment variables
-Terraform will read environment variables in the form of TF_VAR_name to find the value for a variable. For example, the TF_VAR_region variable can be set in the shell to set the region variable in Terraform.
+- Create a file named `variables.tfvars` with the following contents: `region = "us-east-1"`
+- Insert the file as an argument to apply → `terraform apply -var-file="variables.tfvars"`
+
+**From environment variables**
+
+Terraform will read environment variables in the form of `TF_VAR_name` to find the value for a variable. For example, the `TF_VAR_region` variable can be set in the shell to set the region variable in Terraform.
 
 # What is the Variable Definition Precedence?
 
@@ -33,15 +36,11 @@ The above mechanisms for setting variables can be used together in any combinati
 
 Terraform loads variables in the following order, with later sources overriding earlier ones:
 
-Environment variables (lowest priority)
-
-The terraform.tfvars file, if present.
-
-The terraform.tfvars.json file, if present.
-
-Any *.auto.tfvars or *.auto.tfvars.json files, processed in lexical order of their filenames.
-
-Any -var and -var-file options on the command line, in the order they are provided. (highest priotity)
+1. Environment variables (lowest priority)
+2. The `terraform.tfvars` file, if present.
+3. The `terraform.tfvars.json` file, if present.
+4. Any `*.auto.tfvars` or `*.auto.tfvars.json` files, processed in lexical order of their filenames.
+5. Any `-var` and `-var-file` options on the command line, in the order they are provided. (highest priotity)
 
 # Does environment variable support List and map types?
 
@@ -52,58 +51,55 @@ No. Environment variables can only populate string-type variables. List and map 
 You can use different variable files with the same configuration.
 
 Example:
-// For development
+```bash
+# For development
 terraform apply -var-file="dev.tfvars"
-// For test
+# For test
 terraform apply -var-file="test.tfvars"
-
+```
 # How do you assign default values to variables?
-
-
+```terraform
 variable "region" {
   # ...
   default     = "Australia Southeast"
 }
-
-If a variable does not contain a default value, it will search for a value in the .tfvars files, environmental variables, and finally prompt the user via CLI.
+```
+If a variable does not contain a default value, it will search for a value in the `.tfvars` files, environmental variables, and finally prompt the user via CLI.
 
 # How do you define an output variable?
-
+```terraform
 output "ip" {
   value = azurerm_virtual_machine.default.public_ip
 }
- 
+```
 # How do you view outputs and query them?
 
-You will see the output when you run terraform apply
+You will see the output when you run `terraform apply`.
 
-You can query the output with the following command: terraform output ip
+You can query the output with the following command: `terraform output ip`
 
 # What are the data types for the variables?
 
-
-string
-number
-bool
-list(<TYPE>)
-set(<TYPE>)
-map(<TYPE>)
-object({<ATTR NAME> = <TYPE>, ... })
-tuple([<TYPE>, ...])
+- string
+- number
+- bool
+- list(<TYPE>)
+- set(<TYPE>)
+- map(<TYPE>)
+- object({<ATTR NAME> = <TYPE>, ... })
+- tuple([<TYPE>, ...])
  
 
 # Give an example of a list type variable?
-
-
+```terraform
 variable "availability_zone_names" {
   type    = list(string)
   default = ["us-west-1a"]
 }
- 
+```
 
 # Give an example of a map type variable?
-
-
+```terraform
 variable "amis" {
   type    = map(string)
   default = {
@@ -111,64 +107,57 @@ variable "amis" {
     "us-west-2" = "ami-def456"
   }
 }
- 
+```
 
 # What are complex types and what are the collection types Terraform supports?
 
 A complex type is a type that groups multiple values into a single value. There are two categories of complex types:
 
-collection types (for grouping similar values)
-list(number): a sequence of values identified by consecutive whole numbers starting with zero.
-map(string): a collection of values where each is identified by a string label.
-set(...): a collection of unique values that do not have any secondary identifiers or ordering.
-structural types (for grouping potentially dissimilar values).
-object(...): a collection of named attributes that each have their own type.
-tuple(...): a sequence of elements identified by consecutive whole numbers starting with zero, where each element has its own type.
+- collection types (for grouping similar values)
+  - list(number): a sequence of values identified by consecutive whole numbers starting with zero.
+  - map(string): a collection of values where each is identified by a string label.
+  - set(...): a collection of unique values that do not have any secondary identifiers or ordering.
+- structural types (for grouping potentially dissimilar values).
+  - object(...): a collection of named attributes that each have their own type.
+  - tuple(...): a sequence of elements identified by consecutive whole numbers starting with zero, where each element has its own type.
 
 # What are the named values available and how do we refer to them?
 
 Terraform makes several kinds of named values available. Each of these names is an expression that references the associated value; you can use them as standalone expressions, or combine them with other expressions to compute new values.
 
-<RESOURCE TYPE>.<NAME> is an object representing a managed resource of the given type and name. The attributes of the resource can be accessed using dot or square bracket notation.
-
-var.<NAME> is the value of the input variable of the given name.
-
-local.<NAME> is the value of the local value of the given name.
-
-module.<MODULE NAME>.<OUTPUT NAME> is the value of the specified output value from a child module called by the current module.
-
-data.<DATA TYPE>.<NAME> is an object representing a data resource of the given data source type and name. If the resource has the count argument set, the value is a list of objects representing its instances. If the resource has the for_each argument set, the value is a map of objects representing its instances.
-
-path.module is the filesystem path of the module where the expression is placed.
-
-path.root is the filesystem path of the root module of the configuration.
-
-path.cwd is the filesystem path of the current working directory. In normal use of Terraform this is the same as path.root, but some advanced uses of Terraform run it from a directory other than the root module directory, causing these paths to be different.
-
-terraform.workspace is the name of the currently selected workspace.
+- <RESOURCE TYPE>.<NAME> is an object representing a managed resource of the given type and name. The attributes of the resource can be accessed using dot or square bracket notation.
+- var.<NAME> is the value of the input variable of the given name.
+- local.<NAME> is the value of the local value of the given name.
+- module.<MODULE NAME>.<OUTPUT NAME> is the value of the specified output value from a child module called by the current module.
+- data.<DATA TYPE>.<NAME> is an object representing a data resource of the given data source type and name. If the resource has the count argument set, the value is a list of objects representing its instances. If the resource has the for_each argument set, the value is a map of objects representing its instances.
+- path.module is the filesystem path of the module where the expression is placed.
+- path.root is the filesystem path of the root module of the configuration.
+- path.cwd is the filesystem path of the current working directory. In normal use of Terraform this is the same as path.root, but some advanced uses of Terraform run it from a directory other than the root module directory, causing these paths to be different.
+- terraform.workspace is the name of the currently selected workspace.
 
 # What are dynamic blocks?
 
 Some resource types include repeatable nested blocks in their arguments, which do not accept expressions.
-
+```terraform
 "connection_string" {
   # ...
 }
 "connection_string" {
   # ...
 } // Repeated blocks
+```
 You can dynamically construct repeatable “nested blocks”-like settings using a special dynamic block type, which is supported inside resource, data, provider, and provisioner blocks.
 
 A dynamic block acts much like a for expression, but produces nested blocks instead of a complex typed value. It iterates over a given complex value, and generates a nested block for each element of that complex value.
 
-
+```terraform
   dynamic "connection_string" {
     for_each = var.connection_strings
     content {
       # ...
     }
   }
- 
+```
 
 # What are the best practices for dynamic blocks?
 
@@ -176,19 +165,20 @@ Overuse of dynamic blocks can make configuration hard to read and maintain, so w
 
 # What are the Built-in Functions?
 
-The Terraform language includes a number of built-in functions that you can call from within expressions to transform and combine values. (eg: join("-", [var.project_name, var.cloud_location]) → "project-location")
+The Terraform language includes a number of built-in functions that you can call from within expressions to transform and combine values. (eg: `join("-", [var.project_name, var.cloud_location])` → "project-location")
 
-Does Terraform language support user-defined functions?
+# Does Terraform language support user-defined functions?
 
 No, Terraform does not support user-defined functions, and so only the functions built in to the language are available for use.
 
 # What is the built-in function to change string to a number?
 
-parseint parses the given string as a representation of an integer in the specified base and returns the resulting number. The base must be between 2 and 62 inclusive.
+`parseint` parses the given string as a representation of an integer in the specified base and returns the resulting number. The base must be between 2 and 62 inclusive.
 
+```terraform
 parseint("100", 10)
 100
-
+```
 # What is the built-in function to evaluates given expression and returns a boolean whether the expression produced a result without any errors?
 
 can()
@@ -197,16 +187,16 @@ condition = can(formatdate("", var.timestamp))
 
 # What is the built-in function to evaluates all of its argument expressions in turn and returns the result of the first one that does not produce any errors?
 
-try()
+`try()`
 
-
+```terraform
 locals {
   example = try(
     [tostring(var.example)],
     tolist(var.example),
   )
 }
- 
+```
 
 # What is the built-in function that reads the contents of a file at the given path and returns them as a base64-encoded string?
 
@@ -238,14 +228,12 @@ Multiple modules in a path indicate nesting. If a module path is specified witho
 # What is the Resource spec?
 
 A resource spec addresses a specific resource in the config. It takes the form:
-resource_type.resource_name[resource index]
+`resource_type.resource_name[resource index]`
 
-resource_type - Type of the resource being addressed.
-
-resource_name - User-defined name of the resource.
-
-[resource_index] - an optional index into a resource with multiple instances, surrounded by square brace characters ([ and ]).
-
+- resource_type - Type of the resource being addressed.
+- resource_name - User-defined name of the resource.
+- [resource_index] - an optional index into a resource with multiple instances, surrounded by square brace characters ([ and ]).
+```terraform
 // Example 1
 resource "aws_instance" "web" {
   # ...
@@ -265,3 +253,4 @@ resource "aws_instance" "web" {
   }
 }
 aws_instance.web["example"] // Refers to only the "example" instance in the config.
+```
