@@ -16,10 +16,10 @@ Terraform Cloud's private module registry helps you share Terraform modules acro
 
 # What is the difference between public and private module registries when defining the source?
 
-Public registry uses a three-part <NAMESPACE>/<MODULE NAME>/<PROVIDER> format
-Private modules use a four-part <HOSTNAME>/<ORGANIZATION>/<MODULE NAME>/<PROVIDER> format
+- Public registry uses a three-part `<NAMESPACE>/<MODULE NAME>/<PROVIDER>` format
+- Private modules use a four-part `<HOSTNAME>/<ORGANIZATION>/<MODULE NAME>/<PROVIDER>` format
 
-Example: source  = "app.terraform.io/example_corp/vpc/aws"
+Example: `source = "app.terraform.io/example_corp/vpc/aws"`
 
 # Where is the Terraform Module Registry accessible at?
 
@@ -31,13 +31,13 @@ A workspace contains everything Terraform needs to manage a given collection of 
 
 It allows for separate state management, for scenarios such as deploying to different environments (test, prod etc.).
 
-You are configuring a remote backend in the terraform cloud. You didn’t create a workspace before you do terraform init. Does it work?
+You are configuring a remote backend in the terraform cloud. You didn’t create a workspace before you do `terraform init`. Does it work?
 
 Terraform Cloud will create it if necessary. If you opt to use a workspace that already exists (eg the default workspace), the workspace must not have any existing states.
 
 # How do you authenticate the CLI with the terraform cloud?
 
-terraform login
+`terraform login`
 
 Terraform cloud will be opened and generates a token
 
@@ -47,7 +47,7 @@ Paste that token back in the CLI
 
 Once you have authenticated the remote backend, you can migrate your local state file to Terraform Cloud.
 
-To begin the migration, run terraform init. This causes Terraform to recognize your changed backend configuration.
+To begin the migration, run `terraform init`. This causes Terraform to recognize your changed backend configuration.
 
 During reinitialization, Terraform presents a prompt saying that it will copy the state file to the new backend. Enter "yes" and Terraform will migrate the state from your local machine to Terraform Cloud.
 
@@ -55,21 +55,19 @@ During reinitialization, Terraform presents a prompt saying that it will copy th
 
 Add the configuration in the terraform block.
 
-
+```terraform
 terraform {
   backend "remote" {
     hostname      = "app.terraform.io"
     organization  = "<YOUR-ORG-NAME>"
   }
 }
-
+```
 # What are Run Triggers?
 
 Terraform Cloud’s run triggers allow you to link workspaces so that a successful apply in a source workspace will queue a run in the workspace linked to it with a run trigger.
 
-Example:
-
-Adding new subnets to your network configuration could trigger an update to your application configuration to rebalance servers across the new subnets.
+Example: Adding new subnets to your network configuration could trigger an update to your application configuration to rebalance servers across the new subnets.
 
 # What is the benefit of Run Triggers?
 
